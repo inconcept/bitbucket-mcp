@@ -1,0 +1,38 @@
+{
+  "name": "bitbucket-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Bitbucket — manage pull requests, branches, and repositories from any MCP client",
+  "keywords": ["mcp", "bitbucket", "pull-request", "ai", "claude", "cursor"],
+  "homepage": "https://github.com/yourname/bitbucket-mcp-server#readme",
+  "bugs": { "url": "https://github.com/yourname/bitbucket-mcp-server/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/yourname/bitbucket-mcp-server.git" },
+  "license": "MIT",
+  "author": "Hayk Gabrielian",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "bitbucket-mcp-server": "./dist/index.js"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build":   "tsc",
+    "dev":     "tsx watch index.ts",
+    "start":   "node dist/index.js",
+    "lint":    "eslint .",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/node":         "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser":        "^8.0.0",
+    "eslint":              "^9.0.0",
+    "tsx":                 "^4.15.0",
+    "typescript":          "^5.5.0"
+  },
+  "engines": { "node": ">=18.0.0" }
+}

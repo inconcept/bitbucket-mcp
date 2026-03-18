@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output (rebuilt via `npm run build` / `prepare`)
+dist/
+
+# Local env and secrets
+.env
+.env.local
+.env.*.local
+
+# Logs and debug
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# npm pack artifacts
+*.tgz
+
+# Optional: editor
+.idea/
+
+# Cursor / local agent output (not project source)
+mnt/
