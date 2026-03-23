@@ -1,0 +1,46 @@
+# Runs semantic-release on pushes to main: version bump, CHANGELOG, git tag,
+# GitHub Release, and npm publish. Requires repo secret NPM_TOKEN (automation token).
+# If main is branch-protected, allow GitHub Actions to bypass rules or use a PAT — see README.
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      # Skip husky hooks during npm publish prepare; build still runs.
+      HUSKY: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run format:check
+
+      - run: npm run test
+
+      - run: npm run build
+
+      - run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
