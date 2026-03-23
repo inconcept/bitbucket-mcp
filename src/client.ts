@@ -6,8 +6,10 @@ export class BitbucketClient {
   readonly workspace: string;
 
   constructor(config: Config) {
-    this.auth      = Buffer.from(`${config.BITBUCKET_USERNAME}:${config.BITBUCKET_APP_PASSWORD}`).toString("base64");
-    this.baseUrl   = config.BITBUCKET_BASE_URL;
+    this.auth = Buffer.from(
+      `${config.BITBUCKET_USERNAME}:${config.BITBUCKET_APP_PASSWORD}`,
+    ).toString("base64");
+    this.baseUrl = config.BITBUCKET_BASE_URL;
     this.workspace = config.BITBUCKET_WORKSPACE;
   }
 
@@ -16,9 +18,9 @@ export class BitbucketClient {
     const res = await fetch(url, {
       method,
       headers: {
-        Authorization:  `Basic ${this.auth}`,
+        Authorization: `Basic ${this.auth}`,
         "Content-Type": "application/json",
-        Accept:         "application/json",
+        Accept: "application/json",
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
@@ -40,10 +42,18 @@ export class BitbucketClient {
     return (text ? JSON.parse(text) : {}) as T;
   }
 
-  get<T = unknown>(path: string)                    { return this.request<T>("GET",    path);        }
-  post<T = unknown>(path: string, body?: unknown)   { return this.request<T>("POST",   path, body);  }
-  put<T = unknown>(path: string, body?: unknown)    { return this.request<T>("PUT",    path, body);  }
-  delete<T = unknown>(path: string)                 { return this.request<T>("DELETE", path);        }
+  get<T = unknown>(path: string) {
+    return this.request<T>("GET", path);
+  }
+  post<T = unknown>(path: string, body?: unknown) {
+    return this.request<T>("POST", path, body);
+  }
+  put<T = unknown>(path: string, body?: unknown) {
+    return this.request<T>("PUT", path, body);
+  }
+  delete<T = unknown>(path: string) {
+    return this.request<T>("DELETE", path);
+  }
 
   /** Raw fetch for endpoints that return non-JSON (e.g. diffs) */
   async rawText(path: string): Promise<string> {

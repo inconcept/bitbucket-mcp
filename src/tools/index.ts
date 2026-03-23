@@ -1,7 +1,7 @@
 import type { BitbucketClient } from "../client.js";
-import { repositoryTools }  from "./repositories.js";
+import { repositoryTools } from "./repositories.js";
 import { pullRequestTools } from "./pullrequests.js";
-import { branchTools }      from "./branches.js";
+import { branchTools } from "./branches.js";
 
 export function buildTools(client: BitbucketClient) {
   return {

@@ -1,9 +1,6 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { BitbucketClient } from "./client.js";
 import { buildTools, type ToolName } from "./tools/index.js";
@@ -11,11 +8,11 @@ import type { Config } from "./config.js";
 
 export async function createServer(config: Config) {
   const client = new BitbucketClient(config);
-  const tools  = buildTools(client);
+  const tools = buildTools(client);
 
   const server = new Server(
     { name: "bitbucket-mcp-server", version: "1.0.0" },
-    { capabilities: { tools: {} } }
+    { capabilities: { tools: {} } },
   );
 
   // ── List tools ──────────────────────────────────────────────────────────────
@@ -60,7 +57,7 @@ export async function createServer(config: Config) {
 }
 
 export async function startServer(config: Config) {
-  const server    = await createServer(config);
+  const server = await createServer(config);
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("[bitbucket-mcp] Server running on stdio");

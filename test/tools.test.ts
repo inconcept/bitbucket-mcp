@@ -56,9 +56,7 @@ describe("buildTools", () => {
     });
     const tools = buildTools(mockClient({ get }));
     await tools.list_repositories.handler({ page: 1, search: "foo" });
-    expect(get).toHaveBeenCalledWith(
-      expect.stringContaining("q=name+%7E+%22foo%22")
-    );
+    expect(get).toHaveBeenCalledWith(expect.stringContaining("q=name+%7E+%22foo%22"));
   });
 
   it("delete_branch calls DELETE and returns summary", async () => {
@@ -102,7 +100,9 @@ describe("buildTools", () => {
       source: { branch: { name: "feature", target: { hash: "h1" } } },
       destination: { branch: { name: "main", target: { hash: "h2" } } },
       reviewers: [{ display_name: "R1", uuid: "r1" }],
-      participants: [{ user: { display_name: "R1", uuid: "r1" }, role: "REVIEWER", approved: true }],
+      participants: [
+        { user: { display_name: "R1", uuid: "r1" }, role: "REVIEWER", approved: true },
+      ],
       created_on: "2020-01-01",
       updated_on: "2020-01-02",
       close_source_branch: false,
@@ -145,9 +145,13 @@ describe("buildTools", () => {
       ],
     });
     const tools = buildTools(mockClient({ get }));
-    const out = await tools.list_pull_requests.handler({ repo_slug: "repo", page: 1, state: "OPEN" });
+    const out = await tools.list_pull_requests.handler({
+      repo_slug: "repo",
+      page: 1,
+      state: "OPEN",
+    });
     expect(get).toHaveBeenCalledWith(
-      expect.stringContaining("/repositories/ws/repo/pullrequests?")
+      expect.stringContaining("/repositories/ws/repo/pullrequests?"),
     );
     expect(out.pull_requests).toHaveLength(1);
     expect(out.pull_requests[0]).toMatchObject({ id: 1, title: "PR1" });

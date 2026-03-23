@@ -54,11 +54,9 @@ describe("loadConfig", () => {
   });
 
   it("prints errors and exits when env is invalid", () => {
-    const exit = vi.spyOn(process, "exit").mockImplementation(
-      (code?: string | number | null) => {
-        throw new Error(`exit:${code}`);
-      }
-    );
+    const exit = vi.spyOn(process, "exit").mockImplementation((code?: string | number | null) => {
+      throw new Error(`exit:${code}`);
+    });
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubEnv("BITBUCKET_USERNAME", "");
     vi.stubEnv("BITBUCKET_APP_PASSWORD", "x");

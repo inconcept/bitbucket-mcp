@@ -8,7 +8,7 @@ export const repositoryTools = (client: BitbucketClient) => ({
   list_repositories: {
     description: "List all repositories in the configured workspace",
     schema: z.object({
-      page:   z.number().int().positive().default(1).describe("Page number"),
+      page: z.number().int().positive().default(1).describe("Page number"),
       search: z.string().optional().describe("Filter repos by name (partial match)"),
     }),
     async handler({ page, search }: { page: number; search?: string }) {
@@ -16,7 +16,7 @@ export const repositoryTools = (client: BitbucketClient) => ({
       if (search) qs.set("q", `name ~ "${search}"`);
 
       const data = await client.get<BbPagedResponse<BbRepository>>(
-        `/repositories/${client.workspace}?${qs}`
+        `/repositories/${client.workspace}?${qs}`,
       );
 
       return {
@@ -24,13 +24,13 @@ export const repositoryTools = (client: BitbucketClient) => ({
         page: data.page,
         has_next: !!data.next,
         repositories: data.values.map((r) => ({
-          name:       r.name,
-          slug:       r.slug,
-          description:r.description || "",
-          language:   r.language || "",
-          private:    r.is_private,
+          name: r.name,
+          slug: r.slug,
+          description: r.description || "",
+          language: r.language || "",
+          private: r.is_private,
           updated_on: r.updated_on,
-          url:        r.links?.html?.href,
+          url: r.links?.html?.href,
         })),
       };
     },

@@ -1,6 +1,7 @@
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import vitest from "eslint-plugin-vitest";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   { ignores: ["dist/", "node_modules/", "coverage/**", "vitest.config.ts"] },
@@ -28,4 +29,6 @@ export default [
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     },
   },
+  // Turn off ESLint rules that conflict with Prettier (must be last).
+  eslintConfigPrettier,
 ];

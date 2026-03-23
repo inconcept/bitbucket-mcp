@@ -117,7 +117,9 @@ describe("createServer", () => {
     });
     await flushResponses();
 
-    const res = sent.find((m) => isResultForId(m, 2)) as { result?: { isError?: boolean; content?: Array<{ text?: string }> } };
+    const res = sent.find((m) => isResultForId(m, 2)) as {
+      result?: { isError?: boolean; content?: Array<{ text?: string }> };
+    };
     expect(res?.result?.isError).toBe(true);
     expect(res?.result?.content?.[0]?.text).toContain("Unknown tool");
   });
@@ -151,7 +153,9 @@ describe("createServer", () => {
     });
     await flushResponses();
 
-    const res = sent.find((m) => isResultForId(m, 2)) as { result?: { isError?: boolean; content?: Array<{ text?: string }> } };
+    const res = sent.find((m) => isResultForId(m, 2)) as {
+      result?: { isError?: boolean; content?: Array<{ text?: string }> };
+    };
     expect(res?.result?.isError).toBe(true);
     expect(res?.result?.content?.[0]?.text).toMatch(/Error:/);
   });
@@ -186,7 +190,9 @@ describe("createServer", () => {
     });
     await flushResponses();
 
-    const res = sent.find((m) => isResultForId(m, 2)) as { result?: { isError?: boolean; content?: Array<{ text?: string }> } };
+    const res = sent.find((m) => isResultForId(m, 2)) as {
+      result?: { isError?: boolean; content?: Array<{ text?: string }> };
+    };
     expect(res?.result?.isError).toBe(true);
     expect(res?.result?.content?.[0]?.text).toContain("upstream down");
   });
@@ -200,8 +206,8 @@ describe("createServer", () => {
           pagelen: 25,
           values: [],
         }),
-        { status: 200 }
-      )
+        { status: 200 },
+      ),
     );
     const { transport, sent } = createMockTransport();
     const server = await createServer(baseConfig);
@@ -231,7 +237,9 @@ describe("createServer", () => {
     });
     await flushResponses();
 
-    const res = sent.find((m) => isResultForId(m, 2)) as { result?: { isError?: boolean; content?: Array<{ text?: string }> } };
+    const res = sent.find((m) => isResultForId(m, 2)) as {
+      result?: { isError?: boolean; content?: Array<{ text?: string }> };
+    };
     expect(res?.result?.isError).toBeFalsy();
     const text = res?.result?.content?.[0]?.text ?? "";
     expect(JSON.parse(text)).toMatchObject({ total: 0, repositories: [] });

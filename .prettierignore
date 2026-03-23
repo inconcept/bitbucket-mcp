@@ -1,0 +1,11 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# Lockfiles (optional: keep stable formatting off CI churn)
+package-lock.json
+
+# Local / tooling
+.idea/
+mnt/

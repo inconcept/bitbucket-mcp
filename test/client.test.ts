@@ -23,7 +23,7 @@ describe("BitbucketClient", () => {
       new Response(JSON.stringify({ ok: true, n: 1 }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     );
     const client = new BitbucketClient(sampleConfig);
     await expect(client.get("/repos")).resolves.toEqual({ ok: true, n: 1 });
@@ -34,7 +34,7 @@ describe("BitbucketClient", () => {
         headers: expect.objectContaining({
           Authorization: expect.stringMatching(/^Basic /),
         }),
-      })
+      }),
     );
   });
 
@@ -49,7 +49,7 @@ describe("BitbucketClient", () => {
       new Response(JSON.stringify({ error: { message: "not found" } }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     );
     const client = new BitbucketClient(sampleConfig);
     await expect(client.get("/missing")).rejects.toThrow("HTTP 404: not found");
@@ -60,7 +60,7 @@ describe("BitbucketClient", () => {
       new Response(JSON.stringify({ error: {} }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     );
     const client = new BitbucketClient(sampleConfig);
     await expect(client.get("/bad")).rejects.toThrow("HTTP 500");
@@ -87,7 +87,7 @@ describe("BitbucketClient", () => {
 
   it("post sends JSON body", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify({ id: 1 }), { status: 201 })
+      new Response(JSON.stringify({ id: 1 }), { status: 201 }),
     );
     const client = new BitbucketClient(sampleConfig);
     await expect(client.post("/pr", { title: "t" })).resolves.toEqual({ id: 1 });
@@ -96,12 +96,14 @@ describe("BitbucketClient", () => {
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ title: "t" }),
-      })
+      }),
     );
   });
 
   it("put sends JSON body", async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
     const client = new BitbucketClient(sampleConfig);
     await expect(client.put("/x", { a: 1 })).resolves.toEqual({ ok: true });
     expect(fetch).toHaveBeenCalledWith(
@@ -109,7 +111,7 @@ describe("BitbucketClient", () => {
       expect.objectContaining({
         method: "PUT",
         body: JSON.stringify({ a: 1 }),
-      })
+      }),
     );
   });
 
@@ -120,7 +122,7 @@ describe("BitbucketClient", () => {
     await expect(client.delete("/ref")).resolves.toEqual({});
     expect(fetch).toHaveBeenCalledWith(
       "https://api.bitbucket.org/2.0/ref",
-      expect.objectContaining({ method: "DELETE" })
+      expect.objectContaining({ method: "DELETE" }),
     );
   });
 });

@@ -73,7 +73,7 @@ describe("pullRequest tools", () => {
       "/repositories/ws/r/pullrequests",
       expect.objectContaining({
         reviewers: [{ uuid: "{u1}" }],
-      })
+      }),
     );
     await tools.create_pull_request.handler({
       repo_slug: "r",
@@ -87,7 +87,7 @@ describe("pullRequest tools", () => {
       "/repositories/ws/r/pullrequests",
       expect.objectContaining({
         reviewers: [{ username: "alice" }],
-      })
+      }),
     );
   });
 
@@ -116,7 +116,9 @@ describe("pullRequest tools", () => {
       pr_id: 4,
       description: "only desc",
     });
-    expect(put).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/4", { description: "only desc" });
+    expect(put).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/4", {
+      description: "only desc",
+    });
   });
 
   it("update_pull_request can send only title", async () => {
@@ -165,7 +167,9 @@ describe("pullRequest tools", () => {
     const post = vi.fn().mockResolvedValue(prFixture({ state: "DECLINED" }));
     const tools = buildTools(mockClient({ post }));
     await tools.decline_pull_request.handler({ repo_slug: "r", pr_id: 2, message: "no" });
-    expect(post).toHaveBeenLastCalledWith("/repositories/ws/r/pullrequests/2/decline", { message: "no" });
+    expect(post).toHaveBeenLastCalledWith("/repositories/ws/r/pullrequests/2/decline", {
+      message: "no",
+    });
     await tools.decline_pull_request.handler({ repo_slug: "r", pr_id: 2 });
     expect(post).toHaveBeenLastCalledWith("/repositories/ws/r/pullrequests/2/decline", {});
   });
@@ -182,7 +186,10 @@ describe("pullRequest tools", () => {
 
   it("get_diff returns full or truncated diff", async () => {
     const short = "diff --git a\n";
-    const rawText = vi.fn().mockResolvedValueOnce(short).mockResolvedValueOnce("x".repeat(DIFF_MAX_LEN + 100));
+    const rawText = vi
+      .fn()
+      .mockResolvedValueOnce(short)
+      .mockResolvedValueOnce("x".repeat(DIFF_MAX_LEN + 100));
     const t1 = buildTools(mockClient({ rawText }));
     await expect(t1.get_diff.handler({ repo_slug: "r", pr_id: 1 })).resolves.toEqual({
       diff: short,
@@ -262,17 +269,19 @@ describe("pullRequest tools", () => {
     const del = vi.fn().mockResolvedValue({});
     const post = vi.fn().mockResolvedValue({});
     const tools = buildTools(mockClient({ delete: del, post }));
-    expect(await tools.delete_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 2 })).toEqual({
+    expect(
+      await tools.delete_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 2 }),
+    ).toEqual({
       deleted: true,
       comment_id: 2,
     });
     expect(del).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/1/comments/2");
     expect(
-      await tools.resolve_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 3 })
+      await tools.resolve_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 3 }),
     ).toEqual({ resolved: true, comment_id: 3 });
     expect(post).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/1/comments/3/resolve");
     expect(
-      await tools.reopen_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 4 })
+      await tools.reopen_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 4 }),
     ).toEqual({ reopened: true, comment_id: 4 });
     expect(del).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/1/comments/4/resolve");
   });
@@ -326,21 +335,22 @@ describe("pullRequest tools", () => {
   });
 
   it("list_default_reviewers and get_default_reviewer", async () => {
-    const get = vi.fn().mockResolvedValueOnce({
-      size: 1,
-      values: [{ display_name: "D", uuid: "id", nickname: "n" }],
-    }).mockResolvedValueOnce({
-      display_name: "D",
-      uuid: "id",
-      nickname: "n",
-    });
+    const get = vi
+      .fn()
+      .mockResolvedValueOnce({
+        size: 1,
+        values: [{ display_name: "D", uuid: "id", nickname: "n" }],
+      })
+      .mockResolvedValueOnce({
+        display_name: "D",
+        uuid: "id",
+        nickname: "n",
+      });
     const tools = buildTools(mockClient({ get }));
     const list = await tools.list_default_reviewers.handler({ repo_slug: "repo" });
     expect(list.reviewers[0]).toEqual({ display_name: "D", uuid: "id", nickname: "n" });
     const one = await tools.get_default_reviewer.handler({ repo_slug: "repo", username: "u%40x" });
-    expect(get).toHaveBeenLastCalledWith(
-      "/repositories/ws/repo/default-reviewers/u%2540x"
-    );
+    expect(get).toHaveBeenLastCalledWith("/repositories/ws/repo/default-reviewers/u%2540x");
     expect(one.display_name).toBe("D");
   });
 
