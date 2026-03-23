@@ -9,8 +9,13 @@ const ConfigSchema = z.object({
 
 export type Config = z.infer<typeof ConfigSchema>;
 
+/** Parse env into config; use in tests without touching `process.exit`. */
+export function parseConfig(env: NodeJS.ProcessEnv) {
+  return ConfigSchema.safeParse(env);
+}
+
 export function loadConfig(): Config {
-  const result = ConfigSchema.safeParse(process.env);
+  const result = parseConfig(process.env);
   if (!result.success) {
     const missing = result.error.errors.map((e) => `  • ${e.path.join(".")}: ${e.message}`).join("\n");
     console.error(`\n[bitbucket-mcp] Configuration error:\n${missing}\n`);

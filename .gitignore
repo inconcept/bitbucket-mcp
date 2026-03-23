@@ -4,6 +4,9 @@ node_modules/
 # Build output (rebuilt via `npm run build` / `prepare`)
 dist/
 
+# Vitest coverage (HTML + lcov)
+coverage/
+
 # Local env and secrets
 .env
 .env.local
