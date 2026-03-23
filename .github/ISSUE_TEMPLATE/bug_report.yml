@@ -1,0 +1,26 @@
+name: Bug report
+description: Something is not working
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      placeholder: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we reproduce it?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (optional)
+      placeholder: e.g. Node version, MCP client (Cursor, Claude, …), Bitbucket Cloud vs Server
