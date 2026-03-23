@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildTools } from "./tools/index.js";
-import type { BitbucketClient } from "./client.js";
-import type { BbPullRequest } from "./types.js";
+import { buildTools } from "../src/tools/index.js";
+import type { BitbucketClient } from "../src/client.js";
+import type { BbPullRequest } from "../src/types.js";
 
 /** Minimal mock client: only fields used by the tools under test. */
 function mockClient(overrides: Partial<BitbucketClient> & { workspace?: string }): BitbucketClient {

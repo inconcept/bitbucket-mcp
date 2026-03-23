@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { parseConfig, loadConfig } from "./config.js";
+import { parseConfig, loadConfig } from "../src/config.js";
 
 describe("parseConfig", () => {
   it("accepts valid env with explicit base URL", () => {

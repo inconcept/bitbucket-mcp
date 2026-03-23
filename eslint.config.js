@@ -5,7 +5,7 @@ import vitest from "eslint-plugin-vitest";
 export default [
   { ignores: ["dist/", "node_modules/", "coverage/**", "vitest.config.ts"] },
   {
-    files: ["*.ts", "tools/**/*.ts"],
+    files: ["src/**/*.ts", "test/**/*.ts"],
     ignores: ["**/*.test.ts", "**/*.spec.ts"],
     languageOptions: { parser: tsParser, parserOptions: { project: "./tsconfig.json" } },
     plugins: { "@typescript-eslint": tsPlugin },

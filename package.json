@@ -31,8 +31,9 @@
     "LICENSE"
   ],
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json",
-    "dev": "tsx watch index.ts",
+    "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "test": "vitest run",

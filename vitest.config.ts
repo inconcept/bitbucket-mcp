@@ -7,7 +7,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
-      include: ["*.ts", "tools/**/*.ts"],
+      include: ["src/**/*.ts"],
       exclude: [
         "**/*.test.ts",
         "**/*.spec.ts",
@@ -15,8 +15,6 @@ export default defineConfig({
         "node_modules/**",
         "vitest.config.ts",
         "eslint.config.js",
-        "index.ts",
-        "types.ts",
       ],
     },
   },

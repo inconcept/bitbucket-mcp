@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildTools } from "./tools/index.js";
-import type { BitbucketClient } from "./client.js";
-import type { BbPullRequest } from "./types.js";
+import { buildTools } from "../src/tools/index.js";
+import type { BitbucketClient } from "../src/client.js";
+import type { BbPullRequest } from "../src/types.js";
 
 const DIFF_MAX_LEN = 8192;
 

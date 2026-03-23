@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { JSONRPC_VERSION, LATEST_PROTOCOL_VERSION } from "@modelcontextprotocol/sdk/types.js";
-import { createServer, startServer } from "./server.js";
-import type { Config } from "./config.js";
+import { createServer, startServer } from "../src/server.js";
+import type { Config } from "../src/config.js";
 
 vi.mock("@modelcontextprotocol/sdk/server/stdio.js", () => ({
   // `new StdioServerTransport()` in startServer requires a constructable class.

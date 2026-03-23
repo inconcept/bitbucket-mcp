@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { BitbucketClient } from "./client.js";
-import type { Config } from "./config.js";
+import { BitbucketClient } from "../src/client.js";
+import type { Config } from "../src/config.js";
 
 const sampleConfig: Config = {
   BITBUCKET_USERNAME: "user",

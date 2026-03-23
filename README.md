@@ -139,16 +139,18 @@ npm run lint           # ESLint
 ## Project structure
 
 ```
-├── index.ts          # CLI entry point (#!/usr/bin/env node)
-├── config.ts         # Env var loading + Zod validation
-├── client.ts         # Bitbucket REST API client
-├── server.ts         # MCP server wiring (list + call handlers)
-├── types.ts          # Bitbucket API response types
-└── tools/
-    ├── index.ts      # Barrel — merges all tool groups
-    ├── repositories.ts
-    ├── pullrequests.ts
-    └── branches.ts
+├── src/
+│   ├── index.ts      # CLI entry point (#!/usr/bin/env node)
+│   ├── config.ts     # Env var loading + Zod validation
+│   ├── client.ts     # Bitbucket REST API client
+│   ├── server.ts     # MCP server wiring (list + call handlers)
+│   ├── types.ts      # Bitbucket API response types
+│   └── tools/
+│       ├── index.ts  # Barrel — merges all tool groups
+│       ├── repositories.ts
+│       ├── pullrequests.ts
+│       └── branches.ts
+└── test/             # Vitest specs (*.test.ts)
 ```
 
 ## Publishing to npm
