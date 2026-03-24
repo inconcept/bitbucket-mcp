@@ -1,5 +1,5 @@
 {
-  "name": "bitbucket-mcp-server",
+  "name": "@inconcept-labs/bitbucket-mcp",
   "version": "1.0.0",
   "description": "MCP server for Bitbucket — manage pull requests, branches, and repositories from any MCP client",
   "keywords": [
@@ -8,7 +8,8 @@
     "pull-request",
     "ai",
     "claude",
-    "cursor"
+    "cursor",
+    "codex"
   ],
   "homepage": "https://github.com/inconcept/bitbucket-mcp#readme",
   "bugs": {
@@ -23,7 +24,7 @@
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "bitbucket-mcp-server": "./dist/index.js"
+    "bitbucket-mcp": "./dist/index.js"
   },
   "files": [
     "dist",

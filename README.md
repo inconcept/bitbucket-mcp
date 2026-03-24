@@ -1,4 +1,4 @@
-# bitbucket-mcp-server
+# bitbucket-mcp
 
 An [MCP](https://modelcontextprotocol.io) server for Bitbucket Cloud.  
 Manage pull requests, branches, and repositories from any MCP-compatible client (Cursor, Claude Desktop, etc.).
@@ -6,14 +6,14 @@ Manage pull requests, branches, and repositories from any MCP-compatible client 
 ## Installation
 
 ```bash
-npx bitbucket-mcp-server
+npx bitbucket-mcp
 ```
 
 Or install globally:
 
 ```bash
-npm install -g bitbucket-mcp-server
-bitbucket-mcp-server
+npm install -g bitbucket-mcp
+bitbucket-mcp
 ```
 
 ## Setup
@@ -44,7 +44,7 @@ Add to your `~/.cursor/mcp.json` (or Cursor → Settings → MCP):
   "mcpServers": {
     "bitbucket": {
       "command": "npx",
-      "args": ["-y", "bitbucket-mcp-server"],
+      "args": ["-y", "bitbucket-mcp"],
       "env": {
         "BITBUCKET_USERNAME": "your_username",
         "BITBUCKET_APP_PASSWORD": "your_app_password",
@@ -64,7 +64,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "bitbucket": {
       "command": "npx",
-      "args": ["-y", "bitbucket-mcp-server"],
+      "args": ["-y", "bitbucket-mcp"],
       "env": {
         "BITBUCKET_USERNAME": "your_username",
         "BITBUCKET_APP_PASSWORD": "your_app_password",

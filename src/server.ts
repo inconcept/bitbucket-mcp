@@ -11,7 +11,7 @@ export async function createServer(config: Config) {
   const tools = buildTools(client);
 
   const server = new Server(
-    { name: "bitbucket-mcp-server", version: "1.0.0" },
+    { name: "bitbucket-mcp", version: "1.0.0" },
     { capabilities: { tools: {} } },
   );
 
