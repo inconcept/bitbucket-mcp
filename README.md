@@ -1,18 +1,27 @@
-# bitbucket-mcp
+# Bitbucket MCP
 
-An [MCP](https://modelcontextprotocol.io) server for Bitbucket Cloud.  
-Manage pull requests, branches, and repositories from any MCP-compatible client (Cursor, Claude Desktop, etc.).
+[![npm version](https://img.shields.io/npm/v/@inconcept-labs/bitbucket-mcp.svg)](https://www.npmjs.com/package/@inconcept-labs/bitbucket-mcp)
+
+An [MCP](https://modelcontextprotocol.io) server for [Bitbucket](https://bitbucket.org). It talks to the **Bitbucket Cloud** REST API by default (`https://api.bitbucket.org/2.0`). You can point it at **Bitbucket Server or Data Center** with `BITBUCKET_BASE_URL` if your instance exposes a compatible API; not every endpoint may match Cloud behavior.
+
+Use it from any MCP-capable client (Cursor, Claude Desktop, Codex, and others) to work with pull requests, branches, and repositories in natural language.
+
+## Prerequisites
+
+- **Node.js 22 or newer** (required by this package)
 
 ## Installation
 
+Run the published package with `npx` (recommended):
+
 ```bash
-npx bitbucket-mcp
+npx -y @inconcept-labs/bitbucket-mcp
 ```
 
-Or install globally:
+Or install globally and run the CLI binary `bitbucket-mcp`:
 
 ```bash
-npm install -g bitbucket-mcp
+npm install -g @inconcept-labs/bitbucket-mcp
 bitbucket-mcp
 ```
 
@@ -22,29 +31,31 @@ bitbucket-mcp
 
 1. Go to **Bitbucket → Personal Settings → App Passwords**
 2. Create a new password with these permissions:
-   - **Repositories:** Read, Write (Write needed for delete_branch, default reviewers)
+   - **Repositories:** Read, Write (Write needed for `delete_branch`, default reviewers)
    - **Pull Requests:** Read, Write
 3. Copy the generated password
 
-### 2. Set environment variables
+Keep app passwords out of source control. Put them only in your MCP client’s `env` block or in a local environment that is not committed.
 
-| Variable                 | Required | Description                               |
-| ------------------------ | -------- | ----------------------------------------- |
-| `BITBUCKET_USERNAME`     | ✅       | Your Bitbucket username                   |
-| `BITBUCKET_APP_PASSWORD` | ✅       | App password from step 1                  |
-| `BITBUCKET_WORKSPACE`    | ✅       | Workspace slug (from your Bitbucket URL)  |
-| `BITBUCKET_BASE_URL`     | ❌       | Override for Bitbucket Server/Data Center |
+### 2. Environment variables
 
-### 3. Connect to Cursor
+| Variable                 | Required | Description                                                                 |
+| ------------------------ | -------- | --------------------------------------------------------------------------- |
+| `BITBUCKET_USERNAME`     | Yes      | Your Bitbucket username                                                     |
+| `BITBUCKET_APP_PASSWORD` | Yes      | App password from step 1                                                    |
+| `BITBUCKET_WORKSPACE`    | Yes      | Workspace slug (from your Bitbucket URL)                                    |
+| `BITBUCKET_BASE_URL`     | No       | API base URL (default: `https://api.bitbucket.org/2.0`). Use for Server/DC. |
 
-Add to your `~/.cursor/mcp.json` (or Cursor → Settings → MCP):
+### 3. MCP client configuration
+
+Add a server entry that runs `npx` with the scoped package and passes the variables above. Example:
 
 ```json
 {
   "mcpServers": {
     "bitbucket": {
       "command": "npx",
-      "args": ["-y", "bitbucket-mcp"],
+      "args": ["-y", "@inconcept-labs/bitbucket-mcp"],
       "env": {
         "BITBUCKET_USERNAME": "your_username",
         "BITBUCKET_APP_PASSWORD": "your_app_password",
@@ -55,27 +66,15 @@ Add to your `~/.cursor/mcp.json` (or Cursor → Settings → MCP):
 }
 ```
 
-### 4. Connect to Claude Desktop
+**Where to put this**
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+- **Cursor:** `~/.cursor/mcp.json`, or **Cursor → Settings → MCP**
+- **Claude Desktop (macOS):** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Claude Desktop (Windows):** `%APPDATA%\Claude\claude_desktop_config.json`
 
-```json
-{
-  "mcpServers": {
-    "bitbucket": {
-      "command": "npx",
-      "args": ["-y", "bitbucket-mcp"],
-      "env": {
-        "BITBUCKET_USERNAME": "your_username",
-        "BITBUCKET_APP_PASSWORD": "your_app_password",
-        "BITBUCKET_WORKSPACE": "your_workspace"
-      }
-    }
-  }
-}
-```
+Merge the `bitbucket` block into the existing `mcpServers` object if you already have other servers configured.
 
-## Available Tools
+## Available tools
 
 ### Repositories
 
@@ -83,7 +82,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 | ------------------- | ---------------------------------------------------------- |
 | `list_repositories` | List repos in the workspace (supports search & pagination) |
 
-### Pull Requests
+### Pull requests
 
 | Tool                      | Description                                                        |
 | ------------------------- | ------------------------------------------------------------------ |
@@ -126,55 +125,21 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 - _"Decline PR #15 with message: not needed anymore"_
 - _"Add a comment to PR #8: 'LGTM!'"_
 
-## Development
+## Troubleshooting
 
-```bash
-git clone https://github.com/inconcept/bitbucket-mcp.git
-cd bitbucket-mcp
-npm install
-cp .env.example .env   # fill in your credentials
+- **Configuration error on startup** — One or more required env vars are missing or empty. Set `BITBUCKET_USERNAME`, `BITBUCKET_APP_PASSWORD`, and `BITBUCKET_WORKSPACE`, then restart the MCP client.
+- **401 / 403 from Bitbucket** — Wrong username or app password, or the app password lacks the scopes listed above. Regenerate the app password if needed.
+- **404 or “not found” for repos** — Check `BITBUCKET_WORKSPACE` matches the workspace **slug** in the URL (not the display name).
 
-npm run dev            # run with tsx watch (hot reload)
-npm run build          # compile TypeScript → dist/
-npm run lint           # ESLint
-```
+## Contributing
 
-## Project structure
+For development, project layout, and release automation, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-```
-├── src/
-│   ├── index.ts      # CLI entry point (#!/usr/bin/env node)
-│   ├── config.ts     # Env var loading + Zod validation
-│   ├── client.ts     # Bitbucket REST API client
-│   ├── server.ts     # MCP server wiring (list + call handlers)
-│   ├── types.ts      # Bitbucket API response types
-│   └── tools/
-│       ├── index.ts  # Barrel — merges all tool groups
-│       ├── repositories.ts
-│       ├── pullrequests.ts
-│       └── branches.ts
-└── test/             # Vitest specs (*.test.ts)
-```
+## Links
 
-## Publishing to npm
-
-Releases are automated with **[semantic-release](https://github.com/semantic-release/semantic-release)** on every push to `main` that produces a releasable version from [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat:`, `fix:`, `feat!:` / `BREAKING CHANGE:`). The workflow bumps `package.json`, updates `CHANGELOG.md`, creates a Git tag and GitHub Release, and runs `npm publish`.
-
-**Repository setup**
-
-1. Add an **npm automation token** (or granular token with publish) as the GitHub secret **`NPM_TOKEN`** (Settings → Secrets and variables → Actions).
-2. If **`main` is branch-protected**, semantic-release must be allowed to push release commits and tags. Either:
-   - add a ruleset bypass for **GitHub Actions** on that branch, or use a **PAT** with `contents: write` stored as a secret and wire it into checkout per [semantic-release docs](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/ci-configuration.md#authentication); or
-   - temporarily relax protection for the bot user that pushes (less ideal).
-
-**Local manual publish** (only when you must bypass the pipeline):
-
-```bash
-npm run build
-npm publish
-```
-
-Commit messages on `main` are checked with **commitlint** (husky `commit-msg` hook); use conventional commits so releases stay predictable.
+- [Package on npm](https://www.npmjs.com/package/@inconcept-labs/bitbucket-mcp)
+- [Issues](https://github.com/inconcept/bitbucket-mcp/issues)
+- [Repository](https://github.com/inconcept/bitbucket-mcp)
 
 ## License
 
