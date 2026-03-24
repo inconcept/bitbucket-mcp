@@ -1,6 +1,6 @@
 {
   "name": "@inconcept-labs/bitbucket-mcp",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "MCP server for Bitbucket — manage pull requests, branches, and repositories from any MCP client",
   "private": false,
   "keywords": [
@@ -85,5 +85,9 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
