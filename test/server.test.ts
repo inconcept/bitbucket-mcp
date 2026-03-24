@@ -22,6 +22,7 @@ const baseConfig: Config = {
   BITBUCKET_APP_PASSWORD: "p",
   BITBUCKET_WORKSPACE: "ws",
   BITBUCKET_BASE_URL: "https://api.bitbucket.org/2.0",
+  allowDestructiveTools: false,
 };
 
 /** Collect JSON-RPC responses the server sends back through the transport. */
@@ -89,6 +90,64 @@ describe("createServer", () => {
       | undefined;
     expect(listRes?.result?.tools?.length).toBeGreaterThan(0);
     expect(listRes?.result?.tools?.some((t) => t.name === "list_repositories")).toBe(true);
+    expect(listRes?.result?.tools?.some((t) => t.name === "delete_branch")).toBe(false);
+    expect(listRes?.result?.tools?.some((t) => t.name === "delete_pr_comment")).toBe(false);
+  });
+
+  it("includes delete_branch and delete_pr_comment in tools/list when allowDestructiveTools is true", async () => {
+    const { transport, sent } = createMockTransport();
+    const server = await createServer({ ...baseConfig, allowDestructiveTools: true });
+    await server.connect(transport);
+    const inbound = transport.onmessage!;
+    inbound({
+      jsonrpc: JSONRPC_VERSION,
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: LATEST_PROTOCOL_VERSION,
+        capabilities: {},
+        clientInfo: { name: "test-client", version: "0.0.0" },
+      },
+    });
+    await flushResponses();
+    inbound({ jsonrpc: JSONRPC_VERSION, id: 2, method: "tools/list", params: {} });
+    await flushResponses();
+    const listRes = sent.find((m) => isResultForId(m, 2)) as
+      | { result?: { tools?: Array<{ name: string }> } }
+      | undefined;
+    expect(listRes?.result?.tools?.some((t) => t.name === "delete_branch")).toBe(true);
+    expect(listRes?.result?.tools?.some((t) => t.name === "delete_pr_comment")).toBe(true);
+  });
+
+  it("returns disabled error for delete_branch when allowDestructiveTools is false", async () => {
+    const { transport, sent } = createMockTransport();
+    const server = await createServer(baseConfig);
+    await server.connect(transport);
+    const inbound = transport.onmessage!;
+    inbound({
+      jsonrpc: JSONRPC_VERSION,
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: LATEST_PROTOCOL_VERSION,
+        capabilities: {},
+        clientInfo: { name: "t", version: "1" },
+      },
+    });
+    await flushResponses();
+    inbound({
+      jsonrpc: JSONRPC_VERSION,
+      id: 2,
+      method: "tools/call",
+      params: { name: "delete_branch", arguments: { repo_slug: "r", branch_name: "x" } },
+    });
+    await flushResponses();
+    const res = sent.find((m) => isResultForId(m, 2)) as {
+      result?: { isError?: boolean; content?: Array<{ text?: string }> };
+    };
+    expect(res?.result?.isError).toBe(true);
+    expect(res?.result?.content?.[0]?.text).toContain("disabled");
+    expect(res?.result?.content?.[0]?.text).toContain("BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS");
   });
 
   it("returns error for unknown tool name", async () => {

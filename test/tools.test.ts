@@ -59,9 +59,16 @@ describe("buildTools", () => {
     expect(get).toHaveBeenCalledWith(expect.stringContaining("q=name+%7E+%22foo%22"));
   });
 
+  it("omits delete_branch and delete_pr_comment when allowDestructiveTools is not set", () => {
+    const tools = buildTools(mockClient({}));
+    expect(tools).not.toHaveProperty("delete_branch");
+    expect(tools).not.toHaveProperty("delete_pr_comment");
+    expect(tools).toHaveProperty("list_repositories");
+  });
+
   it("delete_branch calls DELETE and returns summary", async () => {
     const del = vi.fn().mockResolvedValue({});
-    const tools = buildTools(mockClient({ delete: del }));
+    const tools = buildTools(mockClient({ delete: del }), { allowDestructiveTools: true });
     const out = await tools.delete_branch.handler({ repo_slug: "r1", branch_name: "old" });
     expect(del).toHaveBeenCalledWith("/repositories/ws/r1/refs/branches/old");
     expect(out).toEqual({ deleted: "old", repo: "r1" });

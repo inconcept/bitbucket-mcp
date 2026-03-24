@@ -268,7 +268,7 @@ describe("pullRequest tools", () => {
   it("delete_pr_comment, resolve_pr_comment, reopen_pr_comment", async () => {
     const del = vi.fn().mockResolvedValue({});
     const post = vi.fn().mockResolvedValue({});
-    const tools = buildTools(mockClient({ delete: del, post }));
+    const tools = buildTools(mockClient({ delete: del, post }), { allowDestructiveTools: true });
     expect(
       await tools.delete_pr_comment.handler({ repo_slug: "r", pr_id: 1, comment_id: 2 }),
     ).toEqual({
