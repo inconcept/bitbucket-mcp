@@ -27,7 +27,7 @@
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "bitbucket-mcp": "./dist/index.js"
+    "bitbucket-mcp": "dist/index.js"
   },
   "files": [
     "dist",
