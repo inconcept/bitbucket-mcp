@@ -2,6 +2,7 @@
   "name": "@inconcept-labs/bitbucket-mcp",
   "version": "1.0.0",
   "description": "MCP server for Bitbucket — manage pull requests, branches, and repositories from any MCP client",
+  "private": false,
   "keywords": [
     "mcp",
     "bitbucket",
@@ -11,7 +12,7 @@
     "cursor",
     "codex"
   ],
-  "homepage": "https://github.com/inconcept/bitbucket-mcp#readme",
+  "homepage": "https://github.com/inconcept/bitbucket-mcp",
   "bugs": {
     "url": "https://github.com/inconcept/bitbucket-mcp/issues"
   },
@@ -20,7 +21,9 @@
     "url": "git+https://github.com/inconcept/bitbucket-mcp.git"
   },
   "license": "MIT",
-  "author": "Hayk Gabrielian",
+  "author": {
+    "name": "InConcept Labs"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -81,6 +84,6 @@
     "vitest": "^4.1.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   }
 }
