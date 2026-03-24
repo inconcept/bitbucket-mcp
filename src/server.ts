@@ -3,12 +3,17 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { BitbucketClient } from "./client.js";
-import { buildTools, type ToolName } from "./tools/index.js";
+import { buildTools, isGatedDestructiveTool } from "./tools/index.js";
 import type { Config } from "./config.js";
+
+const DESTRUCTIVE_DISABLED_HINT =
+  "Set BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS=true (or 1/yes/on) to enable delete_branch and delete_pr_comment.";
 
 export async function createServer(config: Config) {
   const client = new BitbucketClient(config);
-  const tools = buildTools(client);
+  const tools = config.allowDestructiveTools
+    ? buildTools(client, { allowDestructiveTools: true })
+    : buildTools(client);
 
   const server = new Server(
     { name: "bitbucket-mcp", version: "1.0.0" },
@@ -26,8 +31,18 @@ export async function createServer(config: Config) {
 
   // ── Call tool ───────────────────────────────────────────────────────────────
   server.setRequestHandler(CallToolRequestSchema, async (req) => {
-    const name = req.params.name as ToolName;
-    const tool = tools[name];
+    const name = req.params.name as string;
+
+    if (!config.allowDestructiveTools && isGatedDestructiveTool(name)) {
+      return {
+        content: [
+          { type: "text", text: `Tool "${name}" is disabled. ${DESTRUCTIVE_DISABLED_HINT}` },
+        ],
+        isError: true,
+      };
+    }
+
+    const tool = tools[name as keyof typeof tools];
 
     if (!tool) {
       return {

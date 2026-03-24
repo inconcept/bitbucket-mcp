@@ -7,6 +7,7 @@ const sampleConfig: Config = {
   BITBUCKET_APP_PASSWORD: "app-pass",
   BITBUCKET_WORKSPACE: "my-ws",
   BITBUCKET_BASE_URL: "https://api.bitbucket.org/2.0",
+  allowDestructiveTools: false,
 };
 
 describe("BitbucketClient", () => {

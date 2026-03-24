@@ -39,12 +39,13 @@ Keep app passwords out of source control. Put them only in your MCP client’s `
 
 ### 2. Environment variables
 
-| Variable                 | Required | Description                                                                 |
-| ------------------------ | -------- | --------------------------------------------------------------------------- |
-| `BITBUCKET_USERNAME`     | Yes      | Your Bitbucket username                                                     |
-| `BITBUCKET_APP_PASSWORD` | Yes      | App password from step 1                                                    |
-| `BITBUCKET_WORKSPACE`    | Yes      | Workspace slug (from your Bitbucket URL)                                    |
-| `BITBUCKET_BASE_URL`     | No       | API base URL (default: `https://api.bitbucket.org/2.0`). Use for Server/DC. |
+| Variable                                | Required | Description                                                                                                                                                      |
+| --------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BITBUCKET_USERNAME`                    | Yes      | Your Bitbucket username                                                                                                                                          |
+| `BITBUCKET_APP_PASSWORD`                | Yes      | App password from step 1                                                                                                                                         |
+| `BITBUCKET_WORKSPACE`                   | Yes      | Workspace slug (from your Bitbucket URL)                                                                                                                         |
+| `BITBUCKET_BASE_URL`                    | No       | API base URL (default: `https://api.bitbucket.org/2.0`). Use for Server/DC.                                                                                      |
+| `BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS` | No       | Set to `true`, `1`, `yes`, or `on` to register **`delete_branch`** and **`delete_pr_comment`**. Off by default so those tools are not exposed unless you opt in. |
 
 ### 3. MCP client configuration
 
@@ -84,37 +85,37 @@ Merge the `bitbucket` block into the existing `mcpServers` object if you already
 
 ### Pull requests
 
-| Tool                      | Description                                                        |
-| ------------------------- | ------------------------------------------------------------------ |
-| `list_pull_requests`      | List PRs filtered by state (OPEN / MERGED / DECLINED / SUPERSEDED) |
-| `get_pull_request`        | Full PR details including participants and reviewers               |
-| `create_pull_request`     | Open a new PR with optional reviewers                              |
-| `update_pull_request`     | Update title, description, or reviewers                            |
-| `merge_pull_request`      | Merge using merge_commit, squash, or fast_forward                  |
-| `decline_pull_request`    | Decline a PR with an optional message                              |
-| `add_pr_comment`          | Post a Markdown comment on a PR                                    |
-| `get_diff`                | Fetch the unified diff (truncated to 8 KB)                         |
-| `list_pr_comments`        | List all comments on a PR                                          |
-| `get_pr_comment`          | Get a specific comment                                             |
-| `update_pr_comment`       | Update a comment                                                   |
-| `delete_pr_comment`       | Delete a comment                                                   |
-| `resolve_pr_comment`      | Resolve a comment thread                                           |
-| `reopen_pr_comment`       | Reopen a resolved comment thread                                   |
-| `approve_pull_request`    | Approve a PR                                                       |
-| `unapprove_pull_request`  | Remove your approval                                               |
-| `request_pr_changes`      | Request changes on a PR                                            |
-| `list_pr_statuses`        | List commit/build statuses for a PR                                |
-| `list_default_reviewers`  | List default reviewers (auto-added to new PRs)                     |
-| `get_default_reviewer`    | Get a specific default reviewer                                    |
-| `add_default_reviewer`    | Add a user as default reviewer                                     |
-| `remove_default_reviewer` | Remove a user from default reviewers                               |
+| Tool                      | Description                                                         |
+| ------------------------- | ------------------------------------------------------------------- |
+| `list_pull_requests`      | List PRs filtered by state (OPEN / MERGED / DECLINED / SUPERSEDED)  |
+| `get_pull_request`        | Full PR details including participants and reviewers                |
+| `create_pull_request`     | Open a new PR with optional reviewers                               |
+| `update_pull_request`     | Update title, description, or reviewers                             |
+| `merge_pull_request`      | Merge using merge_commit, squash, or fast_forward                   |
+| `decline_pull_request`    | Decline a PR with an optional message                               |
+| `add_pr_comment`          | Post a Markdown comment on a PR                                     |
+| `get_diff`                | Fetch the unified diff (truncated to 8 KB)                          |
+| `list_pr_comments`        | List all comments on a PR                                           |
+| `get_pr_comment`          | Get a specific comment                                              |
+| `update_pr_comment`       | Update a comment                                                    |
+| `delete_pr_comment`       | Delete a comment (requires `BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS`) |
+| `resolve_pr_comment`      | Resolve a comment thread                                            |
+| `reopen_pr_comment`       | Reopen a resolved comment thread                                    |
+| `approve_pull_request`    | Approve a PR                                                        |
+| `unapprove_pull_request`  | Remove your approval                                                |
+| `request_pr_changes`      | Request changes on a PR                                             |
+| `list_pr_statuses`        | List commit/build statuses for a PR                                 |
+| `list_default_reviewers`  | List default reviewers (auto-added to new PRs)                      |
+| `get_default_reviewer`    | Get a specific default reviewer                                     |
+| `add_default_reviewer`    | Add a user as default reviewer                                      |
+| `remove_default_reviewer` | Remove a user from default reviewers                                |
 
 ### Branches
 
-| Tool            | Description                             |
-| --------------- | --------------------------------------- |
-| `list_branches` | List branches with optional name search |
-| `delete_branch` | Delete a branch in a repository         |
+| Tool            | Description                                                        |
+| --------------- | ------------------------------------------------------------------ |
+| `list_branches` | List branches with optional name search                            |
+| `delete_branch` | Delete a branch (requires `BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS`) |
 
 ## Example prompts
 

@@ -13,6 +13,7 @@ describe("parseConfig", () => {
     if (result.success) {
       expect(result.data.BITBUCKET_WORKSPACE).toBe("ws");
       expect(result.data.BITBUCKET_BASE_URL).toBe("https://api.bitbucket.org/2.0");
+      expect(result.data.allowDestructiveTools).toBe(false);
     }
   });
 
@@ -25,7 +26,29 @@ describe("parseConfig", () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.BITBUCKET_BASE_URL).toBe("https://api.bitbucket.org/2.0");
+      expect(result.data.allowDestructiveTools).toBe(false);
     }
+  });
+
+  it("sets allowDestructiveTools from BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS", () => {
+    for (const v of ["true", "TRUE", "1", "yes", "On"]) {
+      const result = parseConfig({
+        BITBUCKET_USERNAME: "user",
+        BITBUCKET_APP_PASSWORD: "secret",
+        BITBUCKET_WORKSPACE: "ws",
+        BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS: v,
+      });
+      expect(result.success).toBe(true);
+      if (result.success) expect(result.data.allowDestructiveTools).toBe(true);
+    }
+    const off = parseConfig({
+      BITBUCKET_USERNAME: "user",
+      BITBUCKET_APP_PASSWORD: "secret",
+      BITBUCKET_WORKSPACE: "ws",
+      BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS: "false",
+    });
+    expect(off.success).toBe(true);
+    if (off.success) expect(off.data.allowDestructiveTools).toBe(false);
   });
 
   it("fails when required keys are missing", () => {
