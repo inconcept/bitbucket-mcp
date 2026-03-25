@@ -41,6 +41,8 @@ jobs:
 
       - run: npm run build
 
+      - run: npm run test:integration
+
       - run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
