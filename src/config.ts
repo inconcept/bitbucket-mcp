@@ -32,8 +32,8 @@ export function parseConfig(env: NodeJS.ProcessEnv) {
 export function loadConfig(): Config {
   const result = parseConfig(process.env);
   if (!result.success) {
-    const missing = result.error.errors
-      .map((e) => `  • ${e.path.join(".")}: ${e.message}`)
+    const missing = result.error.issues
+      .map((e) => `  • ${e.path.map(String).join(".")}: ${e.message}`)
       .join("\n");
     console.error(`\n[bitbucket-mcp] Configuration error:\n${missing}\n`);
     console.error("Set these environment variables and restart.\n");

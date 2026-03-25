@@ -9,12 +9,16 @@ describe("parseConfig", () => {
       BITBUCKET_WORKSPACE: "ws",
       BITBUCKET_BASE_URL: "https://api.bitbucket.org/2.0",
     });
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.BITBUCKET_WORKSPACE).toBe("ws");
-      expect(result.data.BITBUCKET_BASE_URL).toBe("https://api.bitbucket.org/2.0");
-      expect(result.data.allowDestructiveTools).toBe(false);
-    }
+    expect(result).toEqual({
+      success: true,
+      data: {
+        BITBUCKET_USERNAME: "user",
+        BITBUCKET_APP_PASSWORD: "secret",
+        BITBUCKET_WORKSPACE: "ws",
+        BITBUCKET_BASE_URL: "https://api.bitbucket.org/2.0",
+        allowDestructiveTools: false,
+      },
+    });
   });
 
   it("applies default BITBUCKET_BASE_URL when omitted", () => {
@@ -23,11 +27,16 @@ describe("parseConfig", () => {
       BITBUCKET_APP_PASSWORD: "secret",
       BITBUCKET_WORKSPACE: "ws",
     });
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.BITBUCKET_BASE_URL).toBe("https://api.bitbucket.org/2.0");
-      expect(result.data.allowDestructiveTools).toBe(false);
-    }
+    expect(result).toEqual({
+      success: true,
+      data: {
+        BITBUCKET_USERNAME: "user",
+        BITBUCKET_APP_PASSWORD: "secret",
+        BITBUCKET_WORKSPACE: "ws",
+        BITBUCKET_BASE_URL: "https://api.bitbucket.org/2.0",
+        allowDestructiveTools: false,
+      },
+    });
   });
 
   it("sets allowDestructiveTools from BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS", () => {
@@ -38,8 +47,10 @@ describe("parseConfig", () => {
         BITBUCKET_WORKSPACE: "ws",
         BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS: v,
       });
-      expect(result.success).toBe(true);
-      if (result.success) expect(result.data.allowDestructiveTools).toBe(true);
+      expect(result).toMatchObject({
+        success: true,
+        data: { allowDestructiveTools: true },
+      });
     }
     const off = parseConfig({
       BITBUCKET_USERNAME: "user",
@@ -47,8 +58,10 @@ describe("parseConfig", () => {
       BITBUCKET_WORKSPACE: "ws",
       BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS: "false",
     });
-    expect(off.success).toBe(true);
-    if (off.success) expect(off.data.allowDestructiveTools).toBe(false);
+    expect(off).toMatchObject({
+      success: true,
+      data: { allowDestructiveTools: false },
+    });
   });
 
   it("fails when required keys are missing", () => {
