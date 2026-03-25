@@ -119,7 +119,7 @@ describe("createServer", () => {
     expect(listRes?.result?.tools?.some((t) => t.name === "delete_pr_comment")).toBe(true);
   });
 
-  it("returns disabled error for delete_branch when allowDestructiveTools is false", async () => {
+  it("returns not found for delete_branch when allowDestructiveTools is false (tool not registered)", async () => {
     const { transport, sent } = createMockTransport();
     const server = await createServer(baseConfig);
     await server.connect(transport);
@@ -146,8 +146,8 @@ describe("createServer", () => {
       result?: { isError?: boolean; content?: Array<{ text?: string }> };
     };
     expect(res?.result?.isError).toBe(true);
-    expect(res?.result?.content?.[0]?.text).toContain("disabled");
-    expect(res?.result?.content?.[0]?.text).toContain("BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS");
+    expect(res?.result?.content?.[0]?.text).toContain("not found");
+    expect(res?.result?.content?.[0]?.text).toContain("delete_branch");
   });
 
   it("returns error for unknown tool name", async () => {
@@ -180,7 +180,7 @@ describe("createServer", () => {
       result?: { isError?: boolean; content?: Array<{ text?: string }> };
     };
     expect(res?.result?.isError).toBe(true);
-    expect(res?.result?.content?.[0]?.text).toContain("Unknown tool");
+    expect(res?.result?.content?.[0]?.text).toMatch(/not found|MCP error/);
   });
 
   it("returns Zod error text for invalid tool arguments", async () => {
@@ -216,7 +216,7 @@ describe("createServer", () => {
       result?: { isError?: boolean; content?: Array<{ text?: string }> };
     };
     expect(res?.result?.isError).toBe(true);
-    expect(res?.result?.content?.[0]?.text).toMatch(/Error:/);
+    expect(res?.result?.content?.[0]?.text).toMatch(/Input validation error|invalid_type/);
   });
 
   it("returns isError when the tool handler fails", async () => {

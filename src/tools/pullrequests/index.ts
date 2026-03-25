@@ -1,0 +1,23 @@
+/** Pull request tool classes — order matches MCP registration in `../index.ts`. */
+export { ListPullRequestsTool } from "./list-pull-requests.js";
+export { GetPullRequestTool } from "./get-pull-request.js";
+export { CreatePullRequestTool } from "./create-pull-request.js";
+export { UpdatePullRequestTool } from "./update-pull-request.js";
+export { MergePullRequestTool } from "./merge-pull-request.js";
+export { DeclinePullRequestTool } from "./decline-pull-request.js";
+export { AddPrCommentTool } from "./add-pr-comment.js";
+export { GetDiffTool } from "./get-diff.js";
+export { ListPrCommentsTool } from "./list-pr-comments.js";
+export { GetPrCommentTool } from "./get-pr-comment.js";
+export { UpdatePrCommentTool } from "./update-pr-comment.js";
+export { DeletePrCommentTool } from "./delete-pr-comment.js";
+export { ResolvePrCommentTool } from "./resolve-pr-comment.js";
+export { ReopenPrCommentTool } from "./reopen-pr-comment.js";
+export { ApprovePullRequestTool } from "./approve-pull-request.js";
+export { UnapprovePullRequestTool } from "./unapprove-pull-request.js";
+export { RequestPrChangesTool } from "./request-pr-changes.js";
+export { ListPrStatusesTool } from "./list-pr-statuses.js";
+export { ListDefaultReviewersTool } from "./list-default-reviewers.js";
+export { GetDefaultReviewerTool } from "./get-default-reviewer.js";
+export { AddDefaultReviewerTool } from "./add-default-reviewer.js";
+export { RemoveDefaultReviewerTool } from "./remove-default-reviewer.js";

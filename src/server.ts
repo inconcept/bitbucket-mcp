@@ -1,73 +1,13 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { zodToJsonSchema } from "zod-to-json-schema";
 import { BitbucketClient } from "./client.js";
-import { buildTools, isGatedDestructiveTool } from "./tools/index.js";
+import { registerAllTools } from "./tools/index.js";
 import type { Config } from "./config.js";
-
-const DESTRUCTIVE_DISABLED_HINT =
-  "Set BITBUCKET_MCP_ALLOW_DESTRUCTIVE_TOOLS=true (or 1/yes/on) to enable delete_branch and delete_pr_comment.";
 
 export async function createServer(config: Config) {
   const client = new BitbucketClient(config);
-  const tools = config.allowDestructiveTools
-    ? buildTools(client, { allowDestructiveTools: true })
-    : buildTools(client);
-
-  const server = new Server(
-    { name: "bitbucket-mcp", version: "1.0.0" },
-    { capabilities: { tools: {} } },
-  );
-
-  // ── List tools ──────────────────────────────────────────────────────────────
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: Object.entries(tools).map(([name, tool]) => ({
-      name,
-      description: tool.description,
-      inputSchema: zodToJsonSchema(tool.schema, { $refStrategy: "none" }),
-    })),
-  }));
-
-  // ── Call tool ───────────────────────────────────────────────────────────────
-  server.setRequestHandler(CallToolRequestSchema, async (req) => {
-    const name = req.params.name as string;
-
-    if (!config.allowDestructiveTools && isGatedDestructiveTool(name)) {
-      return {
-        content: [
-          { type: "text", text: `Tool "${name}" is disabled. ${DESTRUCTIVE_DISABLED_HINT}` },
-        ],
-        isError: true,
-      };
-    }
-
-    const tool = tools[name as keyof typeof tools];
-
-    if (!tool) {
-      return {
-        content: [{ type: "text", text: `Unknown tool: ${name}` }],
-        isError: true,
-      };
-    }
-
-    try {
-      // Validate input with Zod
-      const parsed = tool.schema.parse(req.params.arguments ?? {});
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await (tool.handler as (a: any) => Promise<unknown>)(parsed);
-      return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      return {
-        content: [{ type: "text", text: `Error: ${message}` }],
-        isError: true,
-      };
-    }
-  });
-
+  const server = new McpServer({ name: "bitbucket-mcp", version: "1.0.0" });
+  registerAllTools(server, client, { allowDestructiveTools: config.allowDestructiveTools });
   return server;
 }
 
