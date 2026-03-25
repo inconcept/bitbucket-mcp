@@ -4,7 +4,7 @@ Thanks for your interest in contributing to **Bitbucket MCP**! This guide covers
 
 ## Prerequisites
 
-- **Node.js 22+** (see `engines` in `package.json`)
+- **Node.js 24+** (see `engines` in `package.json`)
 - A **Bitbucket Cloud** account (for manual integration testing)
 
 ## Getting started
