@@ -1,9 +1,11 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, defaultExclude } from "vitest/config";
 
 export default defineConfig({
   test: {
     environment: "node",
     include: ["**/*.{test,spec}.ts"],
+    // Stdio MCP integration test is run via `npm run test:integration` after `npm run build`.
+    exclude: [...defaultExclude, "**/mcp-stdio.integration.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],

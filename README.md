@@ -132,6 +132,10 @@ Merge the `bitbucket` block into the existing `mcpServers` object if you already
 - **401 / 403 from Bitbucket** — Wrong username or app password, or the app password lacks the scopes listed above. Regenerate the app password if needed.
 - **404 or “not found” for repos** — Check `BITBUCKET_WORKSPACE` matches the workspace **slug** in the URL (not the display name).
 
+## Testing
+
+Pull request CI runs **ESLint → Prettier → unit tests (`npm test`) → build (`npm run build`) → MCP stdio integration tests (`npm run test:integration`)**. Integration tests need the compiled `dist/` output. For local commands, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Contributing
 
 For development, project layout, and release automation, see [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -21,10 +21,13 @@ npm run typecheck      # tsc --noEmit (src + test)
 npm run lint           # ESLint
 npm run format         # Prettier (auto-fix)
 npm run format:check   # Prettier (check only)
-npm test               # Vitest
-npm run test:watch     # Vitest in watch mode
-npm run test:coverage  # Vitest with coverage
+npm test               # Vitest — unit tests only (see vitest.config.ts exclude)
+npm run test:integration  # MCP stdio integration only — needs `npm run build` first (uses vitest.integration.config.ts)
+npm run test:watch     # Vitest watch — unit tests only (default config)
+npm run test:coverage  # Vitest coverage — unit tests only
 ```
+
+CI runs **unit tests → build → integration tests** (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Locally, run `npm run build` then `npm run test:integration` to exercise [`test/mcp-stdio.integration.test.ts`](test/mcp-stdio.integration.test.ts) (spawns `node dist/index.js` and uses the official MCP client over real stdio). [`vitest.config.ts`](vitest.config.ts) excludes the integration file from `npm test`; [`vitest.integration.config.ts`](vitest.integration.config.ts) runs only that spec.
 
 ## Project structure
 
