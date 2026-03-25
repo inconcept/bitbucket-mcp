@@ -8,7 +8,7 @@ Use it from any MCP-capable client (Cursor, Claude Desktop, Codex, and others) t
 
 ## Prerequisites
 
-- **Node.js 22 or newer** (required by this package)
+- **Node.js 24 or newer** (required by this package)
 
 ## Installation
 
