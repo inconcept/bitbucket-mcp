@@ -42,6 +42,7 @@ This server authenticates with a scoped Atlassian **API token**. (Bitbucket Clou
    - `write:repository:bitbucket`
    - `read:pullrequest:bitbucket`
    - `write:pullrequest:bitbucket`
+   - `admin:repository:bitbucket`
 5. Click **Create token** and copy the value immediately — Atlassian only displays it once.
 
 ### 2. Find your workspace slug and Atlassian email
