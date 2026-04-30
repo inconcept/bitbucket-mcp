@@ -32,8 +32,8 @@ export class MergePullRequestTool extends BitbucketMcpTool<typeof mergePullReque
   async execute(client: BitbucketClient, args: z.infer<typeof mergePullRequestSchema>) {
     const base = prPath(client.workspace, args.repo_slug, args.pr_id);
 
-    let strategy: string = args.merge_strategy ?? "";
-    if (!strategy) {
+    let strategy: string | undefined = args.merge_strategy;
+    if (strategy === undefined) {
       const pr = await client.get<BbPullRequest>(base);
       strategy = pr.destination?.branch?.default_merge_strategy ?? FALLBACK_STRATEGY;
     }
