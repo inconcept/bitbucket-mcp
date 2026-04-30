@@ -10,6 +10,8 @@ export interface BbUser {
 export interface BbBranch {
   name: string;
   target: { hash: string; date?: string };
+  merge_strategies?: string[];
+  default_merge_strategy?: string;
 }
 
 export interface BbPullRequest {

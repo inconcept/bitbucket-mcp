@@ -142,6 +142,7 @@ const TOOL_CASES: ToolCase[] = [
     Tool: MergePullRequestTool,
     args: { repo_slug: "r", pr_id: 1 },
     prepare: (c) => {
+      vi.mocked(c.get).mockResolvedValue(minimalPr());
       vi.mocked(c.post).mockResolvedValue(minimalPr({ state: "MERGED" }));
     },
   },
