@@ -147,12 +147,13 @@ describe("pullRequest tools", () => {
       message: "merge msg",
       close_source_branch: true,
     });
-    expect(out).toEqual({ merged: true, state: "MERGED" });
+    expect(out).toEqual({ merged: true, state: "MERGED", merge_strategy: "squash" });
   });
 
   it("merge_pull_request sends only merge_strategy when no message or close_source_branch", async () => {
     const post = vi.fn().mockResolvedValue(prFixture({ state: "MERGED" }));
-    const tools = buildTools(mockClient({ post }));
+    const get = vi.fn();
+    const tools = buildTools(mockClient({ post, get }));
     await tools.merge_pull_request.handler({
       repo_slug: "r",
       pr_id: 2,
@@ -161,6 +162,64 @@ describe("pullRequest tools", () => {
     expect(post).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/2/merge", {
       merge_strategy: "fast_forward",
     });
+    expect(get).not.toHaveBeenCalled();
+  });
+
+  it("merge_pull_request resolves repo default when merge_strategy is omitted", async () => {
+    const get = vi.fn().mockResolvedValue(
+      prFixture({
+        destination: {
+          branch: {
+            name: "main",
+            target: { hash: "h" },
+            default_merge_strategy: "rebase_merge",
+          },
+        },
+      }),
+    );
+    const post = vi.fn().mockResolvedValue(prFixture({ state: "MERGED" }));
+    const tools = buildTools(mockClient({ get, post }));
+    const out = await tools.merge_pull_request.handler({ repo_slug: "r", pr_id: 8 });
+    expect(get).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/8");
+    expect(post).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/8/merge", {
+      merge_strategy: "rebase_merge",
+    });
+    expect(out).toEqual({ merged: true, state: "MERGED", merge_strategy: "rebase_merge" });
+  });
+
+  it("merge_pull_request falls back to merge_commit when default is missing", async () => {
+    const get = vi.fn().mockResolvedValue(prFixture());
+    const post = vi.fn().mockResolvedValue(prFixture({ state: "MERGED" }));
+    const tools = buildTools(mockClient({ get, post }));
+    const out = await tools.merge_pull_request.handler({ repo_slug: "r", pr_id: 9 });
+    expect(get).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/9");
+    expect(post).toHaveBeenCalledWith("/repositories/ws/r/pullrequests/9/merge", {
+      merge_strategy: "merge_commit",
+    });
+    expect(out.merge_strategy).toBe("merge_commit");
+  });
+
+  it("merge_pull_request accepts all six bitbucket merge strategies", async () => {
+    const post = vi.fn().mockResolvedValue(prFixture({ state: "MERGED" }));
+    const get = vi.fn();
+    const tools = buildTools(mockClient({ post, get }));
+    const strategies = [
+      "merge_commit",
+      "squash",
+      "fast_forward",
+      "squash_fast_forward",
+      "rebase_fast_forward",
+      "rebase_merge",
+    ] as const;
+    for (const strategy of strategies) {
+      const out = await tools.merge_pull_request.handler({
+        repo_slug: "r",
+        pr_id: 1,
+        merge_strategy: strategy,
+      });
+      expect(out.merge_strategy).toBe(strategy);
+    }
+    expect(get).not.toHaveBeenCalled();
   });
 
   it("decline_pull_request posts message or empty object", async () => {
